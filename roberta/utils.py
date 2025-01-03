@@ -35,6 +35,37 @@ wnut_dict = {
     "PAD": 13,
 }
 
+medtxt_dict = {
+    "O": 0,
+    "B-disease": 1,
+    "I-disease": 2,
+    "B-anatomical-parts": 3,
+    "I-anatomical-parts": 4,
+    "B-feature": 5,
+    "I-feature": 6,
+    "B-change": 7,
+    "I-change": 8,
+    "B-time": 9,
+    "I-time": 10,
+    "B-test-test": 11,
+    "I-test-test": 12,
+    "B-test-key": 13,
+    "I-test-key": 14,
+    "B-test-value": 15,
+    "I-test-value": 16,
+    "B-medicine-key": 17,
+    "I-medicine-key": 18,
+    "B-medicine-value": 19,
+    "I-medicine-value": 20,
+    "B-remedy": 21,
+    "I-remedy": 22,
+    "B-clinical-context": 23,
+    "I-clinical-context": 24,
+    "B-pending": 25,
+    "I-pending": 26,
+    "PAD": 27,
+}
+
 
 class BertDataset(Dataset):
     def __init__(self, data) -> None:
@@ -169,10 +200,11 @@ def path_to_data(path):
             data.append(document)
 
     else:
+        label_dict = medtxt_dict if "MedTxt" in path else ner_dict
         for line in row_data:
             if "-DOCSTART-" in line:
                 if len(tokens) != 0:
-                    labels = [key_to_val(la, ner_dict) for la in labels]
+                    labels = [key_to_val(la, label_dict) for la in labels]
                     document = dict(tokens=tokens, labels=labels, doc_index=doc_index, weights=weights)
                     data.append(document)
                     tokens = []
@@ -190,7 +222,7 @@ def path_to_data(path):
             else:
                 line = line.strip().split()
                 tokens.append(line[0])
-                if line[-1] in ner_dict.keys():
+                if line[-1] in label_dict.keys():
                     labels.append(line[-1])
                     weights.append(1.0)
                 else:
@@ -198,7 +230,7 @@ def path_to_data(path):
                     labels.append(line[-2])
 
         if len(tokens) != 0:
-            labels = [key_to_val(la, ner_dict) for la in labels]
+            labels = [key_to_val(la, label_dict) for la in labels]
             document = dict(tokens=tokens, labels=labels, doc_index=doc_index, weights=weights)
             data.append(document)
     return data
@@ -211,8 +243,13 @@ def get_subword_label_id(label_id):
         return label_id + 1
 
 
-def get_label(word_ids, label, subword_label, weights=None, wnut=False):
-    label_dict = wnut_dict if wnut else ner_dict
+def get_label(word_ids, label, subword_label, weights=None, dataset="conll"):
+    if dataset == "conll":
+        label_dict = ner_dict
+    elif dataset == "wnut":
+        label_dict = wnut_dict
+    elif dataset == "medtxt":
+        label_dict = medtxt_dict
     previous_word_idx = -100
     label_ids = []
     token_weights = []
@@ -258,7 +295,7 @@ def dataset_encode(
     subword_label="I",
     post_sentence_padding=False,
     add_sep_between_sentences=False,
-    wnut=False,
+    dataset="conll",
 ):
 
     if p is None or p == 0:
@@ -325,11 +362,13 @@ def dataset_encode(
             attention_mask.append(mask)
 
             label = labels[i:j]
-            label_ids, weights = get_label(word_ids, label, subword_label, weights=document["weights"][i:j], wnut=wnut)
+            label_ids, weights = get_label(
+                word_ids, label, subword_label, weights=document["weights"][i:j], dataset=dataset
+            )
             subword_labels.append(label_ids)
 
             masked_label = row_labels[-1]
-            masked_label_ids = get_label(masked_ids, masked_label, "PAD", wnut=wnut)
+            masked_label_ids = get_label(masked_ids, masked_label, "PAD", dataset=dataset)
             predict_labels.append(masked_label_ids)
             token_weights.append(weights)
 
@@ -367,7 +406,7 @@ def get_inputs(
     subword_label,
     subwords=None,
     word_ids=None,
-    wnut=False,
+    dataset="conll",
 ):
     if subwords is None or word_ids is None:
         subwords, word_ids = tokenizer.tokenizeSentence(" ".join(text))
@@ -397,10 +436,10 @@ def get_inputs(
         mask = [1] * attention_len + [0] * pad_len
 
     label = labels
-    label_ids = get_label(word_ids, label, subword_label, wnut=wnut)
+    label_ids = get_label(word_ids, label, subword_label, dataset=dataset)
 
     masked_label = row_labels
-    masked_label_ids = get_label(masked_ids, masked_label, "PAD", wnut=wnut)
+    masked_label_ids = get_label(masked_ids, masked_label, "PAD", dataset=dataset)
 
     data = {
         "input_ids": torch.tensor([subwords], dtype=torch.int),

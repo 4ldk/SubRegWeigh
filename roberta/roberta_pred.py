@@ -14,39 +14,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from mylogger import set_logger
 from roberta.bpe_dropout import RobertaTokenizerDropout
 from roberta.get_sub_seq import get_subword_sequences
-from roberta.utils import get_inputs, path_to_data, val_to_key
+from roberta.utils import (get_inputs, medtxt_dict, ner_dict, path_to_data,
+                           val_to_key, wnut_dict)
 
 set_logger()
 root_path = os.getcwd()
 logger = getLogger(__name__)
-ner_dict = {
-    "O": 0,
-    "B-PER": 1,
-    "I-PER": 2,
-    "B-ORG": 3,
-    "I-ORG": 4,
-    "B-LOC": 5,
-    "I-LOC": 6,
-    "B-MISC": 7,
-    "I-MISC": 8,
-    "PAD": 9,
-}
-wnut_dict = {
-    "O": 0,
-    "B-corporation": 1,
-    "I-corporation": 2,
-    "B-creative-work": 3,
-    "I-creative-work": 4,
-    "B-group": 5,
-    "I-group": 6,
-    "B-location": 7,
-    "I-location": 8,
-    "B-person": 9,
-    "I-person": 10,
-    "B-product": 11,
-    "I-product": 12,
-    "PAD": 13,
-}
 
 
 def pred(
@@ -60,10 +33,15 @@ def pred(
     k=10,
     method="k-means",
     tfidf=True,
-    wnut=False,
+    dataset="conll",
 ):
     output = []
-    label_dict = wnut_dict if wnut else ner_dict
+    if dataset == "conll":
+        label_dict = ner_dict
+    elif dataset == "wnut":
+        label_dict = wnut_dict
+    elif dataset == "medtxt":
+        label_dict = medtxt_dict
 
     model.eval()
     with torch.no_grad():
@@ -92,7 +70,7 @@ def pred(
                         subword_label="PAD",
                         subwords=subwords[i][0],
                         word_ids=subwords[i][1],
-                        wnut=wnut,
+                        dataset=dataset,
                     )
                     inputs.append(test_inputs["input_ids"])
                     masks.append(test_inputs["attention_mask"])
@@ -147,7 +125,15 @@ def main(
     test_dataset = path_to_data(os.path.join(root_path, test_path))
     start = time.time()
 
-    label_dict = wnut_dict if "wnut" in test_path else ner_dict
+    if "wnut" in test_path:
+        label_dict = wnut_dict
+        dataset = "wnut"
+    elif "MedTxt" in test_path:
+        label_dict = medtxt_dict
+        dataset = "medtxt"
+    else:
+        label_dict = ner_dict
+        dataset = "conll"
     local_model = os.path.join(root_path, model_path)
     tokenizer = RobertaTokenizerDropout.from_pretrained(model_name, p=p)
     config = AutoConfig.from_pretrained(model_name, num_labels=len(label_dict))
@@ -165,7 +151,7 @@ def main(
         k=k,
         method=method,
         tfidf=tfidf,
-        wnut="wnut" in test_path,
+        dataset=dataset,
     )
     final_time = time.time()
     hours = (final_time - start) // 3600

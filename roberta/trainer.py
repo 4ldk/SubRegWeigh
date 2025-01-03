@@ -1,37 +1,14 @@
+import os
+import sys
+
 import torch
 from torch import nn, optim
 from tqdm import tqdm
 from transformers import (AutoModelForTokenClassification,
                           get_linear_schedule_with_warmup)
 
-ner_dict = {
-    "O": 0,
-    "B-PER": 1,
-    "I-PER": 2,
-    "B-ORG": 3,
-    "I-ORG": 4,
-    "B-LOC": 5,
-    "I-LOC": 6,
-    "B-MISC": 7,
-    "I-MISC": 8,
-    "PAD": 9,
-}
-wnut_dict = {
-    "O": 0,
-    "B-corporation": 1,
-    "I-corporation": 2,
-    "B-creative-work": 3,
-    "I-creative-work": 4,
-    "B-group": 5,
-    "I-group": 6,
-    "B-location": 7,
-    "I-location": 8,
-    "B-person": 9,
-    "I-person": 10,
-    "B-product": 11,
-    "I-product": 12,
-    "PAD": 13,
-}
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from roberta.utils import medtxt_dict, ner_dict, wnut_dict
 
 
 class trainer:
@@ -49,9 +26,14 @@ class trainer:
         device="cuda",
         output_path="model/model.pt",
         mid_output_epoch=2,
-        wnut=False,
+        dataset="conll",
     ):
-        label_dict = wnut_dict if wnut else ner_dict
+        if dataset == "conll":
+            label_dict = ner_dict
+        elif dataset == "wnut":
+            label_dict = wnut_dict
+        elif dataset == "medtxt":
+            label_dict = medtxt_dict
         self.model = AutoModelForTokenClassification.from_pretrained(model_name, num_labels=len(label_dict)).to(device)
 
         param_optimizer = list(self.model.named_parameters())

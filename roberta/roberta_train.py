@@ -47,6 +47,13 @@ def main(
     logger.info("Train Start")
     start = time.time()
 
+    if "wnut" in train_path:
+        dataset = "wnut"
+    elif "MedTxt" in train_path:
+        dataset = "medtxt"
+    else:
+        dataset = "conll"
+
     train_datasets = path_to_data(os.path.join(root_path, train_path))
     tokeninzer = RobertaTokenizerDropout.from_pretrained(model_name, p=0)
     train_data = dataset_encode(
@@ -56,7 +63,7 @@ def main(
         subword_label="PAD",
         post_sentence_padding=post_sentence_padding,
         add_sep_between_sentences=add_sep_between_sentences,
-        wnut="wnut" in train_path,
+        dataset=dataset,
     )
     train_loader = get_dataloader(train_data, batch_size=batch_size, shuffle=True)
 
@@ -76,7 +83,7 @@ def main(
         device=device,
         output_path=output_path,
         mid_output_epoch=mid_output_epoch,
-        wnut="wnut" in train_path,
+        dataset=dataset,
     )
     net.train(train_loader, num_epoch)
 

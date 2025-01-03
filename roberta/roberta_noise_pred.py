@@ -14,24 +14,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from mylogger import set_logger
 from roberta.bpe_dropout import RobertaTokenizerDropout
 from roberta.get_sub_seq import get_subword_sequences
-from roberta.utils import get_inputs, path_to_data, val_to_key
+from roberta.utils import get_inputs, ner_dict, path_to_data, val_to_key
 from roberta.white_noise_model import RoBERTaWithNoise
 
 set_logger()
 root_path = os.getcwd()
 logger = getLogger(__name__)
-ner_dict = {
-    "O": 0,
-    "B-PER": 1,
-    "I-PER": 2,
-    "B-ORG": 3,
-    "I-ORG": 4,
-    "B-LOC": 5,
-    "I-LOC": 6,
-    "B-MISC": 7,
-    "I-MISC": 8,
-    "PAD": 9,
-}
 
 
 def pred(
