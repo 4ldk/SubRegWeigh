@@ -44,6 +44,9 @@ def parse_node(node, current_label="O", current_detail="O", results=[]):
     if isinstance(node, NavigableString):
         text = node.strip()
         if text:
+            text = text.replace(".", " .")
+            text = text.replace(",", " ,")
+            text = text.replace("?", " ?")
             tokens = text.split()
             for i, t in enumerate(tokens):
                 if current_label == "O":
@@ -67,8 +70,6 @@ def parse_node(node, current_label="O", current_detail="O", results=[]):
 
 
 def convert_xml_to_conll(xml_str):
-    xml_str = xml_str.replace(".", " .")
-    xml_str = xml_str.replace(",", " ,")
 
     soup = BeautifulSoup(xml_str, "xml")
     articles = soup.find_all("article")
@@ -91,6 +92,8 @@ if __name__ == "__main__":
     train_num = int(len(article_results) * train_rate)
     train_text = ""
     for article_result in article_results[:train_num]:
+        if len(train_text) != 0 and train_text[-2:] != "\n\n":
+            train_text += "\n"
         train_text += "-DOCSTART- -X- O\n\n"
         for word, detail, label in article_result:
             train_text += f"{word} {detail} {label}\n"
@@ -99,6 +102,8 @@ if __name__ == "__main__":
 
     test_text = ""
     for article_result in article_results[train_num:]:
+        if len(test_text) != 0 and test_text[-2:] != "\n":
+            test_text += "\n"
         test_text += "-DOCSTART- -X- O\n\n"
         for word, detail, label in article_result:
             test_text += f"{word} {detail} {label}\n"
