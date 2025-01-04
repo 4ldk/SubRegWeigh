@@ -9,7 +9,7 @@ root_path = os.getcwd()
 
 
 def main(min_weight, predict_path, train_path, output_path):
-    with open(os.path.join(root_path, predict_path)) as f:
+    with open(os.path.join(root_path, predict_path), encoding="utf-8") as f:
         preds = f.readlines()
 
     with open(os.path.join(root_path, train_path), "r", encoding="utf-8") as f:
@@ -54,7 +54,7 @@ def main(min_weight, predict_path, train_path, output_path):
                 out += f"{tok} -X- -X- {lbl} {weight}\n"
         out += "\n"
 
-    with open(os.path.join(root_path, output_path), "w") as f:
+    with open(os.path.join(root_path, output_path), "w", encoding="utf-8") as f:
         f.write(out)
 
 
