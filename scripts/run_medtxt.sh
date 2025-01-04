@@ -31,7 +31,7 @@ python ./roberta/roberta_pred.py --test_path ${TRAIN_FILE} \
                                     --model_name ${MODEL_NAME}
 
 python ./correct.py --predict_path ${PREDICT_PATH}\
-                        --train_path ${CONLL03_TRAIN_FILE} \
+                        --train_path ${TRAIN_FILE} \
                         --output_path ${FIXED_FILE}
 
 export TEST_NUM_EPOCH=5

@@ -96,7 +96,6 @@ if __name__ == "__main__":
             train_text += f"{word} {detail} {label}\n"
             if word == ".":
                 train_text += "\n"
-        train_text += "\n"
 
     test_text = ""
     for article_result in article_results[train_num:]:
@@ -105,7 +104,6 @@ if __name__ == "__main__":
             test_text += f"{word} {detail} {label}\n"
             if word == ".":
                 test_text += "\n"
-        test_text += "\n"
 
     with open("./data/MedTxt_train.txt", "w", encoding="utf-8") as f_out:
         f_out.write(train_text)
