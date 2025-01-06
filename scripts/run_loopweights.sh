@@ -14,7 +14,7 @@ export CONLL03_TRAIN_FILE=data/eng.train
 export MODEL_NAME=roberta-large
 
 CURRENT_TRAIN_FILE=${CONLL03_TRAIN_FILE}
-for NUM_LOOP in $(seq 1 1 ${loop}); do
+for NUM_LOOP in $(seq 1 1 ${LOOP}); do
     export PREDICT_PATH=outputs/predict_${NUM_K}_${METHOD}_loop${NUM_LOOP}.txt
     export MODEL_PATH=model/model_${NUM_K}_${METHOD}_loop${NUM_LOOP}.pth
     export FIXED_FILE=outputs/conll_fixed_${NUM_K}_${METHOD}_loop${NUM_LOOP}.txt

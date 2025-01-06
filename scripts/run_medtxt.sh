@@ -34,7 +34,7 @@ python ./correct.py --predict_path ${PREDICT_PATH}\
                         --train_path ${TRAIN_FILE} \
                         --output_path ${FIXED_FILE}
 
-export TEST_NUM_EPOCH=5
+export TEST_NUM_EPOCH=20
 export TEST_FILE=data/MedTxt_test.txt
 export TEST_PREDICT_PATH=outputs/predict_medtxt_test_${NUM_K}_${METHOD}.txt
 export TEST_MODEL_PATH=model/model_medtxt_test_${NUM_K}_${METHOD}.pth
