@@ -1,9 +1,7 @@
 # SubRegWeigh
 
-This repository is the official implementation of the paper:
+This repository is the official implementation of the COLING 2025 paper:
 **[SubRegWeigh: Effective and Efficient AnnotationWeighing with Subword Regularization](https://arxiv.org/abs/2409.06216)**
-
-Presented at **COLING 2025**, Abu Dhabi.
 
 ## Datasets
 Put following data on ./data folder 
