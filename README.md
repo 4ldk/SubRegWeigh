@@ -12,6 +12,9 @@ Put following data on ./data folder
 - CoNLL++(CoNLL 2020): https://github.com/ShuhengL/acl2023_conllpp
 - SSL2: https://huggingface.co/datasets/stanfordnlp/sst2
 
+## Create Weighted Dataset
+`./SubRegWeigh/scripts/run.sh`
+
 ## Results
 *Note*: For detailed experimental results, please refer to our paper.
 
