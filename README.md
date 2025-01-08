@@ -13,7 +13,7 @@ Put following data on ./data folder
 - SSL2: https://huggingface.co/datasets/stanfordnlp/sst2
 
 ## Results
-*Note*: For detailed experimental results, please refer to the our paper.
+*Note*: For detailed experimental results, please refer to our paper.
 
 | Models                | Time | CoNLL CW | CoNLL 2020 |
 |-----------------------|------|----------|------------|
@@ -23,7 +23,7 @@ Put following data on ./data folder
 | +SubRegWeigh (K-means)|  6:36|     96.12|       95.31| 
 
 ## Citation
-*Note*: This citation refers to the preprint version available on arXiv. The official COLING 2025 proceedings citation will be updated once it becomes available.
+*Note*: This citation refers to the preprint version on arXiv. The official COLING 2025 proceedings citation will be updated once it becomes available.
 
 ```bibtex
 @article{tsuji2024subregweigh,
