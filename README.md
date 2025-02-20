@@ -1,14 +1,14 @@
 # SubRegWeigh
 
 This repository is the official implementation of the COLING 2025 paper:
-**[SubRegWeigh: Effective and Efficient AnnotationWeighing with Subword Regularization](https://arxiv.org/abs/2409.06216)**
+**[SubRegWeigh: Effective and Efficient AnnotationWeighing with Subword Regularization](https://aclanthology.org/2025.coling-main.130/)**
 
 ## Datasets
 Put following data on ./data folder 
 - CoNLL 2003 original: https://www.clips.uantwerpen.be/conll2003/ner/
 - CoNLL++(CoNLL CW): https://github.com/ZihanWangKi/CrossWeigh
 - CoNLL++(CoNLL 2020): https://github.com/ShuhengL/acl2023_conllpp
-- SSL2: https://huggingface.co/datasets/stanfordnlp/sst2
+- SST2: https://huggingface.co/datasets/stanfordnlp/sst2
 
 ## Create Weighted Dataset
 `./SubRegWeigh/scripts/run.sh`
@@ -24,13 +24,26 @@ Put following data on ./data folder
 | +SubRegWeigh (K-means)|  6:36|     96.12|       95.31| 
 
 ## Citation
-*Note*: This citation refers to the preprint version on arXiv. The official COLING 2025 proceedings citation will be updated once it becomes available.
 
 ```bibtex
-@article{tsuji2024subregweigh,
-  title={SubRegWeigh: Effective and Efficient Annotation Weighing with Subword Regularization},
-  author={Tsuji, Kohei and Hiraoka, Tatsuya and Cheng, Yuchang and Iwakura, Tomoya},
-  journal={arXiv preprint arXiv:2409.06216},
-  year={2024}
+@inproceedings{tsuji-etal-2025-subregweigh,
+    title = "{S}ub{R}eg{W}eigh: Effective and Efficient Annotation Weighing with Subword Regularization",
+    author = "Tsuji, Kohei  and
+      Hiraoka, Tatsuya  and
+      Cheng, Yuchang  and
+      Iwakura, Tomoya",
+    editor = "Rambow, Owen  and
+      Wanner, Leo  and
+      Apidianaki, Marianna  and
+      Al-Khalifa, Hend  and
+      Eugenio, Barbara Di  and
+      Schockaert, Steven",
+    booktitle = "Proceedings of the 31st International Conference on Computational Linguistics",
+    month = jan,
+    year = "2025",
+    address = "Abu Dhabi, UAE",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.coling-main.130/",
+    pages = "1908--1921"
 }
 ```

@@ -13,8 +13,7 @@ class RoBERTaWithNoise(RobertaForTokenClassification):
     def forward(self, input_ids=None, attention_mask=None, alpha=0.1, *args, **kwargs):
         inputs_embeds = self.roberta.embeddings.word_embeddings(input_ids)
 
-        noise = torch.randn_like(inputs_embeds) * alpha
-        noisy_inputs_embeds = inputs_embeds + noise
+        noisy_inputs_embeds = (1 - alpha) * inputs_embeds + torch.randn_like(inputs_embeds) * alpha
 
         return super().forward(inputs_embeds=noisy_inputs_embeds, attention_mask=attention_mask, *args, **kwargs)
 
